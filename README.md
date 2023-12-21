@@ -1,2 +1,1 @@
-# dotfiles
-config dotfiles
+These are my various dotfiles.
