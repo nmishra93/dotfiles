@@ -1,0 +1,61 @@
+{
+  "editor.inlineSuggest.enabled": true,
+  "editor.fontSize": 14,
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "workbench.colorTheme": "Material Theme Darker High Contrast",
+  "workbench.iconTheme": "eq-material-theme-icons-darker",
+  "path-autocomplete.pathMappings": {
+    "/": "/",
+    "./": "${folder}"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4
+  },
+  "pylint.lintOnChange": true,
+  "pylint.args": [
+    "\"pylint.args\": [\"--disable=C0111\", \"--max-line-length=130\"]"
+  ],
+  "[r]": {
+    "editor.defaultFormatter": "REditorSupport.r",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "[rmd]": {
+    "editor.defaultFormatter": "REditorSupport.r",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "r.rterm.windows": "C:\\Users\\nmishra\\AppData\\Local\\Programs\\Python\\Python311\\Scripts\\radian.exe",
+  "r.plot.useHttpgd": true,
+  "r.bracketedPaste": true,
+  "security.workspace.trust.untrustedFiles": "open",
+  "terminal.integrated.persistentSessionReviveProcess": "never",
+  "terminal.integrated.enablePersistentSessions": false,
+  "terminal.integrated.fontFamily": "'FiraCode Nerd Font'",
+  "terminal.integrated.fontSize": 11,
+  "terminal.integrated.gpuAcceleration": "on",
+  "terminal.integrated.fontWeightBold": "normal",
+  "editor.formatOnPaste": true,
+  "editor.tokenColorCustomizations": {
+    "[Material Theme Darker High Contrast]": {
+      "comments": "#26A716"
+    }
+  },
+  "editor.minimap.enabled": false,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "vim.startInInsertMode": true,
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "vim.useSystemClipboard": true
+}
