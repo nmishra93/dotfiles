@@ -1,145 +1,160 @@
-# Configure oh-my-posh with a specific theme
+
 oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\stelbent-compact.minimal.omp.json" | Invoke-Expression
 
-# Import the Terminal-Icons module for enhanced icons in the terminal
+# To initialize the running powershell 
+# region mamba initialize
+# !! Contents within this block are managed by 'mamba shell init' !!
+$Env:MAMBA_ROOT_PREFIX = "C:\Users\nmishra\micromamba"
+$Env:MAMBA_EXE = "C:\Users\nmishra\AppData\Local\Microsoft\WinGet\Packages\Mamba.Micromamba_Microsoft.Winget.Source_8wekyb3d8bbwe\micromamba.exe"
+(& $Env:MAMBA_EXE 'shell' 'hook' -s 'powershell' -p $Env:MAMBA_ROOT_PREFIX) | Out-String | Invoke-Expression
+#endregion
+
+# Import Terminal Icons
 Import-Module -Name Terminal-Icons
 
-# Quick shortcut to start Notepad
+# Quick shortcut to start notepad
 function n { notepad $args }
 
-# Function to start a new elevated process
-# If arguments are supplied, a single command is started with admin rights
-# If no arguments, a new admin instance of PowerShell is started
+# Simple function to start a new elevated process. If arguments are supplied then 
+# a single command is started with admin rights; if not then a new admin instance
+# of PowerShell is started.
 function admin {
     if ($args.Count -gt 0) {   
         $argList = "& '" + $args + "'"
         Start-Process "$psHome\pwsh.exe" -Verb runAs -ArgumentList $argList
-    } else {
+    }
+    else {
         Start-Process "$psHome\pwsh.exe" -Verb runAs
     }
 }
 
-# Shortcut to list files in the current directory
 function ll { Get-ChildItem -Path $pwd -File }
-
-# Shortcuts to navigate to specific directories and open them in VS Code
 function g { Set-Location $HOME\Documents\Github }
-function tt { Set-Location "$HOME\Documents\tidytuesday"; code . }
-function da { Set-Location "$HOME\Documents\Data Analysis"; code . }
-function bli { Set-Location "$HOME\OneDrive - Scripps Research\Desktop Files\Data Analysis\BLI"; code . }
-
-# Shortcuts to open the current directory in VS Code
-function c { code . }
-
-# Git-related functions
+function tt {
+    Set-Location "$HOME\Documents\tidytuesday"
+    code .
+}
+function da { 
+    Set-Location "$HOME\Documents\Data Analysis" 
+    code .
+}
+function bli {
+    Set-Location "$HOME\OneDrive - Scripps Research\Desktop Files\Data Analysis\BLI"
+    code .
+}
+function c {
+    code .
+}
 function gcom {
     git add .
     git commit -m "$args"
 }
-
 function lazyg {
     git add .
     git commit -m "$args"
     git push
 }
 
-# Function to create an empty file
 function touch($file) {
     "" | Out-File $file -Encoding ASCII
 }
 
-# Function to find the executable location of a command
 function which($name) {
     Get-Command $name | Select-Object -ExpandProperty Definition
 }
 
-# Recursive force removal of a directory
 function rmrf($path) {
     Remove-Item $path -Recurse -Force
 }
 
-# Remove a file or directory
 function rm($path) {
     Remove-Item $path
 }
 
-# Move a file or directory to a new destination
 function mv($path, $dest) {
     Move-Item $path $dest -Force -Recurse
 }
 
-# Copy a file or directory to a new destination
 function cp($path, $dest) {
     Copy-Item $path $dest -Force -Recurse
 }
 
-# Reboot the computer
 function reboot() {
     Restart-Computer
 }
 
-# Shutdown the computer
 function shutdown() {
     Stop-Computer
 }
 
-# Display the first n lines of a file
 function head($path, $lines = 10) {
     Get-Content $path | Select-Object -First $lines
 }
 
-# Open File Explorer at a specific path
 function x($path = ".") {
     explorer $path
 }
 
-# Functions for working with zip and unzip operations
 function unzip {
-    # Expand the archive in the same directory
+    #    expand in smae directory
     Expand-Archive -Path $args[0] -DestinationPath .
 }
 
 function zip {
-    # Compress the archive in the same directory
+    # compress in same directory
     Compress-Archive -Path $args[0] -DestinationPath "$($args[0]).zip"
 }
 
 function unzipr {
-    # Expand the archive in the same directory and remove the original zip file
+    # expand in same directory and remove zip
     Expand-Archive -Path $args[0] -DestinationPath .
     Remove-Item $args[0]
 }
 
 function zipr {
-    # Compress the archive in the same directory and remove the original files
+    # compress in same directory and remove original
     Compress-Archive -Path $args[0] -DestinationPath "$($args[0]).zip"
     Remove-Item $args[0]
 }
 
-# Function to get the public IP address using an external service
 function Get-PubIP {
-    (Invoke-WebRequest http://ifconfig.me/ip).Content
+    (Invoke-WebRequest http://ifconfig.me/ip ).Content
 }
 
-# Function to navigate to a directory even if the path is a file
+# go to a directory even in path is a file.
 function gotodir($dir) {
-    if ((Get-Item $dir -ErrorAction SilentlyContinue) -is [System.IO.DirectoryInfo]) {
-        cd $dir
-    } else {
-        cd (Split-Path -Path $dir)
+    if ((get-item $dir -erroraction silentlycontinue ) -is [system.io.directoryinfo]) {
+        Set-Location $dir
+    }
+    else {
+        Set-Location (split-path -path $dir)
     }
 }
 
-# Function to find files by filename
+# find files by filename
 function find-file($name) {
-    Get-ChildItem -Recurse -Filter "*${name}*" -ErrorAction SilentlyContinue | ForEach-Object {
-        $place_path = $_.Directory
+    Get-ChildItem -recurse -filter "*${name}*" -ErrorAction SilentlyContinue | ForEach-Object {
+        $place_path = $_.directory
         Write-Output "${place_path}\${_}"
     }
 }
 
-# Aliases for commonly used commands
+# ------------------------------Aliases------------------------------
 set-alias -name gd -value gotodir
 set-alias -name ff -value find-file
+
+# Set UNIX-like aliases for the admin command, so sudo <command> will 
+# run the command with elevated rights.
 Set-Alias -Name su -Value admin
 Set-Alias -Name sudo -Value admin
+Set-Alias -Name mamba -Value micromamba
+
+# Import the Chocolatey Profile that contains the necessary code to enable
+# tab-completions to function for `choco`.
+# Be aware that if you are missing these lines from your profile, tab completion
+# for `choco` will not function.
+# See https://ch0.co/tab-completion for details.
+$ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
+if (Test-Path($ChocolateyProfile)) {
+    Import-Module "$ChocolateyProfile"
+}
